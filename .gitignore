@@ -1,0 +1,14 @@
+# Go build output
+mini_exporter
+*.exe
+
+# Env / secrets
+.env
+*.pem
+*.key
+
+# Editor / OS noise
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
