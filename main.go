@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"math/rand"
 	"net/http"
 	"time"
 
@@ -11,14 +10,6 @@ import (
 
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/mem"
-)
-
-// A gauge metric we update periodically
-var randomGauge = prometheus.NewGauge(
-	prometheus.GaugeOpts{
-		Name: "demo_random_value",
-		Help: "A random value updated every second",
-	},
 )
 
 var cpuUsagePercent = prometheus.NewGauge(
@@ -36,21 +27,12 @@ var memUsagePercent = prometheus.NewGauge(
 )
 
 func main() {
-	// Seed local random number generator so values change each run
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-
 	// Register the metric so Prometheus knows about it
-	prometheus.MustRegister(randomGauge)
 	prometheus.MustRegister(cpuUsagePercent)
 	prometheus.MustRegister(memUsagePercent)
 
-	// Goroutine: update the gauge every second
 	go func() {
 		for {
-			val := r.Float64() * 100
-			randomGauge.Set(val)
-			log.Println("Setting random value:", val)
-
 			// CPU usage (gopsutil returns % over an interval)
 			// interval=0 means "since last call" on some platforms, so we use 1s for consistency
 			cpuPercents, err := cpu.Percent(1*time.Second, false)
